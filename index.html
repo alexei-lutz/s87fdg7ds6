@@ -5,9 +5,14 @@
     <meta name="description" content="A simple jQuery Hex grid Widget, implemented using SVG, for prototyping hex-grid based games." />
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js" ></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.6/svg.min.js"></script>
+	<script src="svg.path.js"></script>
+	<script src="svg.pathmorphing.js"></script>
 	<script src="script.js" ></script>
 	<style type="text/css">
-		svg {}
+		#hex-grid {
+			width: 100vw;
+			height: 100vh;
+		}
 		.hexfield {
 		  fill: transparent;
 		  stroke: yellowgreen;
@@ -52,6 +57,17 @@
 	  draw
 	  	.circle(20)
 	  	.fill('#000')
+
+  	  draw
+        .path()
+        .addClass('path')
+        .M(200, 200)
+        .L(500, 200)
+        .stroke({
+        	width: 3,
+        	color: '#000',
+            opacity: .8
+        })
 
 	};
 	$('#rebuild').click(rebuild);

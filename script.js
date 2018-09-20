@@ -11,8 +11,10 @@ $.fn.hexGridWidget = function (radius, columns, rows, cssClass) {
 				},
 				height = Math.sqrt(3) / 2 * radius,
 				svgParent = createSVG('svg').attr('tabindex', 1).appendTo(element).css({
-					width: (1.5 * columns  +  0.5) * radius,
-					height: (2 * rows  +  1) * height
+					// width: (1.5 * columns  +  0.5) * radius,
+					width: '100vw',
+					// height: (2 * rows  +  1) * height
+					height: '100vh'
 				}).attr({id: 'hex-grid'}),
 				column, row, center,
 				toPoint = function (dx, dy) {
