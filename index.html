@@ -9,20 +9,23 @@
 	<script src="svg.pathmorphing.js"></script>
 	<script src="script.js" ></script>
 	<style type="text/css">
+		body {
+			background-color: #b3b3b3;
+		}
 		#hex-grid {
 			width: 100vw;
 			height: 100vh;
 		}
 		.hexfield {
 		  fill: transparent;
-		  stroke: yellowgreen;
+		  stroke: rgba(0, 0, 0, .8);
 		  stroke-width: 1;
 		}
 		.hexfield:focus {
-		  outline:none;
+		  outline: none;
 		}
 		.hexfield:hover {
-		  fill: green;
+		  fill: #fff;
 		}
 		.hexfield:active {
 		  fill: red;
@@ -99,25 +102,126 @@
 	        }
 	    }
 
+	    function getWidthAndHeightOfPolygon () {
+            const firstPolygon = $('#container [hex-row=0][hex-column=0]')
+            const firstPolygonCorners = firstPolygon.attr('points').split(" ")
+            const firstPolygonCornersCoords = pointsToCoordinates(firstPolygonCorners)
+            let xs = []
+            let ys = []
 
-		function fillWithContent (object) {
-			draw
-				.text(object.text)
-				.fill('#000')
-				.attr({
-					x: getHexInnerCoordinates(object.el).xCenter,
-					y: getHexInnerCoordinates(object.el).yCenter
-				})
+            firstPolygonCornersCoords.forEach(function(item){
+                xs.push(item.x)
+            })
+
+            firstPolygonCornersCoords.forEach(function(item){
+                ys.push(item.y)
+            })
+
+            const x =  Math.max.apply(null, xs)
+            const y =  Math.max.apply(null, ys)
+
+            return [x, y]
+        }
+
+	    // create branchinig for different text 
+	    // positioning types
+
+	    function setContentImage (data, content) {
+            if (content.imgUrl) {
+                draw
+                    .image(content.imgUrl, getWidthAndHeightOfTheFirstPolygon()[0] / 4)
+                    .attr({
+                        'x': getHexInnerCoordinates(data.el).xCenter -
+                        (getWidthAndHeightOfTheFirstPolygon()[0] / 4) / 2,
+                        'y': (getHexInnerCoordinates(data.el).yTop +
+                            ((getHexInnerCoordinates(data.el).yCenter -
+                                getHexInnerCoordinates(data.el).yTop) / 2.5)),
+                        id: data.id + '-img'
+                    })
+            }
+          }
+
+	    function setContentText (dom, content) {
+	    	if (content.textPosition == 'lower') {
+	    		draw
+                    .text(function(add) {
+                        if (Array.isArray(content.text)) {
+                            content.text.forEach(function(text, i) {
+                                insertText(add, i, text, fontSize)
+                            })
+                        } else {
+                            add.tspan(content.text)
+                        }
+                    })
+                    .font({
+                        size: 12,
+                        anchor: 'middle'
+                    })
+                    .fill('#fff')
+                    .attr({
+                        'x': getHexInnerCoordinates(dom.el).xCenter,
+                        'y': getHexInnerCoordinates(dom.el).yCenter +
+                        ((getHexInnerCoordinates(dom.el).yBottom - getHexInnerCoordinates(dom.el).yCenter) / 2) -
+                        12,
+                        id: dom.id + '-text'
+                    })
+	    	}
+    		else if (content.textPosition == 'center') {}
+   			else if (content.textPosition == 'higher') {
+   				draw
+                    .text(function(add) {
+                        if (Array.isArray(content.text)) {
+                            content.text.forEach(function(text, i) {
+                                insertText(add, i, text, fontSize)
+                            })
+                        } else {
+                            add.tspan(content.text)
+                        }
+                    })
+                    .font({
+                        size: 12,
+                        anchor: 'middle'
+                    })
+                    .fill('#fff')
+                    .attr({
+                        'x': getHexInnerCoordinates(dom.el).xCenter,
+                        'y': getHexInnerCoordinates(dom.el).yCenter -
+                        ((getHexInnerCoordinates(dom.el).yBottom - getHexInnerCoordinates(dom.el).yCenter) / 2) -
+                        12,
+                        id: dom.id + '-text'
+                    })
+   			}
+	    }
+
+	    function fillHex (dom, content) {
+	    	if (content.imgUrl) {
+	    		setContentImage(dom, content)
+	    	}
+	    	setContentText(dom, content)
+	    }
+
+		function fillWithContent (dom, content) {
+			fillHex(dom, content)
+			// createAndFillArrow()
 		}
 
 		const object1 = {
-
-		  	el: $('#container [hex-row=2][hex-column=2]'),
-		  	text: 'lorem ipsum'
+			dom: {
+		  		el: $('#container [hex-row=2][hex-column=2]'),
+		  		id: 'lorem'
+			},
+			content: {
+				imgUrl: '',
+		  		text: 'lorem ipsum',
+		  		textPosition: 'lower'
+			}
 
 		}
 
-		fillWithContent(object1)
+		// objects = [...]
+		// fillWithContent(objects)
+
+		fillWithContent(object1.dom, object1.content)
 
 	};
 	$('#rebuild').click(rebuild);
