@@ -252,13 +252,28 @@
 		  		text: 'lorem ipsum',
 		  		textPosition: 'lower'
 			}
-
+		}
+		const object2 = {
+			dom: {
+		  		el: $('#container [hex-row=1][hex-column=3]'),
+		  		id: 'lorem'
+			},
+			content: {
+				imgUrl: '',
+				hoverImgUrl: '',
+		  		text: 'lorem ipsum',
+		  		textPosition: 'lower'
+			}
 		}
 
 		// objects = [...]
 		// fillWithContent(objects)
 
-		fillWithContent(object1.dom, object1.content)
+		const objects = [object1, object2]
+
+		objects.forEach(function (object) {
+			fillWithContent(object.dom, object.content)	
+		});
 
 	};
 	$('#rebuild').click(rebuild);
