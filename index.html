@@ -44,7 +44,7 @@
 	<!-- main initialisation -->
 	var rebuild = function () {
 		var
-			radius = $(window).width() / 20, 
+			radius = $(window).width() * .08, 
 		    columns = 10, 
 		    rows = 6, 
 		    cssClass = 'hexfield';
@@ -175,33 +175,49 @@
             }
         }
 
-        function insertText (add, i, text, fontSize, newLineForEveryTextString=false) {
-            if (newLineForEveryTextString === true){
-                if (i > 0) {
-                    add.tspan(text.string).newLine()
-                }
-                else {
-                    add.tspan(text.string)
-                }
+        function insertText (add, i, text, fontSize) {
+        	if (text.newLine === true) {
+        		add.tspan(text.string).newLine()
+        	} 
+        	else if (text.super) {
+                add.tspan(text.string)
+                    .font({
+                        size: fontSize * .8
+                    })
+                    .attr({
+                        'dominant-baseline': 'auto',
+                        'baseline-shift': 'super'
+                    })
             }
-            else {
-                if (i == 1) {
-                    add.tspan(text.string).newLine()
-                }
-                else if (text.super) {
-                    add.tspan(text.string)
-                        .font({
-                            size: fontSize * .8
-                        })
-                        .attr({
-                            'dominant-baseline': 'auto',
-                            'baseline-shift': 'super'
-                        })
-                }
-                else {
-                    add.tspan(text.string)
-                }
-            }
+        	else {
+        		add.tspan(text.string)
+        	}
+            // if (newLineForEveryTextString === true){
+            //     if (i > 0) {
+            //         add.tspan(text.string).newLine()
+            //     }
+            //     else {
+            //         add.tspan(text.string)
+            //     }
+            // }
+            // else {
+            //     if (i == 1) {
+            //         add.tspan(text.string).newLine()
+            //     }
+            //     else if (text.super) {
+            //         add.tspan(text.string)
+            //             .font({
+            //                 size: fontSize * .8
+            //             })
+            //             .attr({
+            //                 'dominant-baseline': 'auto',
+            //                 'baseline-shift': 'super'
+            //             })
+            //     }
+            //     else {
+            //         add.tspan(text.string)
+            //     }
+            // }
         }
 
 	    function setContentText (dom, content) {
@@ -285,14 +301,14 @@
 		const object2 = {
 			dom: {
 		  		el: $('#container [hex-row=1][hex-column=3]'),
-		  		id: 'lorem'
+		  		id: 'lorem-1'
 			},
 			content: {
 				imgUrl: '',
 				hoverImgUrl: '',
 		  		text: [
 		  			{string: 'lorem ipsum'},
-		  			{string: 'ipsum'}
+		  			{string: 'ipsum', newLine: true}
 		  			],
 		  		textPosition: 'lower'
 			}
