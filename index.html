@@ -173,7 +173,36 @@
                         id: data.id + '-img'
                     })
             }
-          }
+        }
+
+        function insertText (add, i, text, fontSize, newLineForEveryTextString=false) {
+            if (newLineForEveryTextString === true){
+                if (i > 0) {
+                    add.tspan(text.string).newLine()
+                }
+                else {
+                    add.tspan(text.string)
+                }
+            }
+            else {
+                if (i == 1) {
+                    add.tspan(text.string).newLine()
+                }
+                else if (text.super) {
+                    add.tspan(text.string)
+                        .font({
+                            size: fontSize * .8
+                        })
+                        .attr({
+                            'dominant-baseline': 'auto',
+                            'baseline-shift': 'super'
+                        })
+                }
+                else {
+                    add.tspan(text.string)
+                }
+            }
+        }
 
 	    function setContentText (dom, content) {
 	    	if (content.textPosition == 'lower') {
@@ -181,7 +210,7 @@
                     .text(function(add) {
                         if (Array.isArray(content.text)) {
                             content.text.forEach(function(text, i) {
-                                insertText(add, i, text, fontSize)
+                                insertText(add, i, text, 10)
                             })
                         } else {
                             add.tspan(content.text)
@@ -261,7 +290,10 @@
 			content: {
 				imgUrl: '',
 				hoverImgUrl: '',
-		  		text: 'lorem ipsum',
+		  		text: [
+		  			{string: 'lorem ipsum'},
+		  			{string: 'ipsum'}
+		  			],
 		  		textPosition: 'lower'
 			}
 		}
