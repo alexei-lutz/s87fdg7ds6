@@ -40,35 +40,84 @@
 <script>
 	<!-- main initialisation -->
 	var rebuild = function () {
-	  var
-	    radius = $(window).width() / 20, 
-	    columns = 2, 
-	    rows = 2, 
-	    cssClass = 'hexfield';
-	  $('#container').empty().hexGridWidget(radius, columns, rows, cssClass).on('hexclick', function (e) { 
-	     $('#logger').text('clicked [' + e.column + ',' + e.row + '] hex with center at [' + e.center.x + ',' + e.center.y + '] px');
-	  });
-	  $('#container .hexfield').click(function () {
-	    this.classList.toggle('clicked');
-	  });
+		var
+			radius = $(window).width() / 20, 
+		    columns = 10, 
+		    rows = 6, 
+		    cssClass = 'hexfield';
+		$('#container').empty().hexGridWidget(radius, columns, rows, cssClass).on('hexclick', function (e) { 
+		     $('#logger').text('clicked [' + e.column + ',' + e.row + '] hex with center at [' + e.center.x + ',' + e.center.y + '] px');
+		});
+		$('#container .hexfield').click(function () {
+		    this.classList.toggle('clicked');
+		});
 
-	  const draw = SVG('hex-grid')
+		const draw = SVG('hex-grid')
 
-	  draw
-	  	.circle(20)
-	  	.fill('#000')
+		function pointsToCoordinates (points) {
+              let coordinates = []
+              points.forEach(function (point) {
+                  let arr = point.split(',')
+                  const x = Number(arr[0])
+                  const y = Number(arr[1])
+                  coordinates.push({x: x, y: y})
+              })
 
-  	  draw
-        .path()
-        .addClass('path')
-        .M(200, 200)
-        .L(500, 200)
-        .stroke({
-        	width: 3,
-        	color: '#000',
-            opacity: .8
-        })
-        .drawAnimated({duration: 700})
+              return coordinates
+          }
+
+		function getNumCoordsOfTheElement (elem) {
+	        const pointsArr = elem.attr('points').split(" ")
+	        const numCoords = pointsToCoordinates(pointsArr)
+	        return numCoords
+	    }
+
+	    function getHexInnerCoordinates (elem) {
+	        const coords = getNumCoordsOfTheElement(elem)
+
+	        let xCoords = []
+	        let yCoords = []
+
+	        coords.forEach(function (item) {
+	            xCoords.push(item.x)
+	            yCoords.push(item.y)
+	        })
+
+	        const xRight = Math.max.apply(null, xCoords)
+	        const xLeft = Math.min.apply(null, xCoords)
+
+	        const yTop = Math.min.apply(null, yCoords)
+	        const yBottom = Math.max.apply(null, yCoords)
+
+	        const xCenter = xLeft + ((xRight - xLeft) / 2)
+	        const yCenter = yTop + ((yBottom - yTop) / 2)
+
+	        return {
+	            xCenter: xCenter, yCenter: yCenter,
+	            xLeft: xLeft, xRight: xRight,
+	            yTop: yTop, yBottom: yBottom
+	        }
+	    }
+
+
+		function fillWithContent (object) {
+			draw
+				.text(object.text)
+				.fill('#000')
+				.attr({
+					x: getHexInnerCoordinates(object.el).xCenter,
+					y: getHexInnerCoordinates(object.el).yCenter
+				})
+		}
+
+		const object1 = {
+
+		  	el: $('#container [hex-row=2][hex-column=2]'),
+		  	text: 'lorem ipsum'
+
+		}
+
+		fillWithContent(object1)
 
 	};
 	$('#rebuild').click(rebuild);
