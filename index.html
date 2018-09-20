@@ -75,6 +75,40 @@
 	        return numCoords
 	    }
 
+	    function createPseudoHex (dom, content) {
+            const points = dom.el.attr('points')
+            if (dom.href) {
+                draw
+                    .link(dom.href)
+                    .addClass('svg-anchor-link')
+                    .polygon(points)
+                    .fill('transparent')
+                    .attr({
+                        id: dom.id
+                    })
+            } else {
+                draw
+                    .polygon(points)
+                    .fill('transparent')
+                    .attr({
+                        id: dom.id
+                    })
+            }
+            $('#' + dom.id).on('mouseover', function () {
+                dom.el.css({opacity: 1})
+                $('#' + dom.id + '-img').attr({href: content.hoverImgUrl})
+                $('#' + dom.id + '-text').css({fill: '#000'})
+                if (dom.href) {
+                    $('#' + dom.id).css({'cursor': 'pointer'})
+                }
+            })
+            $('#' + dom.id).on('mouseleave', function () {
+                dom.el.css({opacity: .2})
+                $('#' + dom.id + '-img').attr({href: content.imgUrl})
+                $('#' + dom.id + '-text').css({fill: '#fff'})
+                })
+        }
+
 	    function getHexInnerCoordinates (elem) {
 	        const coords = getNumCoordsOfTheElement(elem)
 
@@ -198,9 +232,11 @@
 	    		setContentImage(dom, content)
 	    	}
 	    	setContentText(dom, content)
+	    	createPseudoHex(dom, content)
 	    }
 
 		function fillWithContent (dom, content) {
+			dom.el.css({'fill': '#fff', 'opacity': '.2'})
 			fillHex(dom, content)
 			// createAndFillArrow()
 		}
@@ -212,6 +248,7 @@
 			},
 			content: {
 				imgUrl: '',
+				hoverImgUrl: '',
 		  		text: 'lorem ipsum',
 		  		textPosition: 'lower'
 			}
