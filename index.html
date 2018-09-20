@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="description" content="A simple jQuery Hex grid Widget, implemented using SVG, for prototyping hex-grid based games." />
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js" ></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.6/svg.min.js"></script>
 	<script src="script.js" ></script>
 	<style type="text/css">
 		svg {}
@@ -45,6 +46,13 @@
 	  $('#container .hexfield').click(function () {
 	    this.classList.toggle('clicked');
 	  });
+
+	  const draw = SVG('hex-grid')
+
+	  draw
+	  	.circle(20)
+	  	.fill('#000')
+
 	};
 	$('#rebuild').click(rebuild);
 	rebuild();

@@ -13,7 +13,7 @@ $.fn.hexGridWidget = function (radius, columns, rows, cssClass) {
 				svgParent = createSVG('svg').attr('tabindex', 1).appendTo(element).css({
 					width: (1.5 * columns  +  0.5) * radius,
 					height: (2 * rows  +  1) * height
-				}),
+				}).attr({id: 'hex-grid'}),
 				column, row, center,
 				toPoint = function (dx, dy) {
 					return Math.round(dx + center.x) + ',' + Math.round(dy + center.y);
